@@ -44,7 +44,7 @@ cp .env.example .env
 
 3. Start Infrastructure (PostgreSQL, Redis)
 
-docker-compose up -d
+docker-compose up -d or docker compose up -d (for new versions of docker)
 
 4. Install Dependencies
 
