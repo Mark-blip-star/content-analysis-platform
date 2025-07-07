@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,13 +29,17 @@ function LoginPage() {
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Login failed");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Login failed");
+      }
 
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
+      setIsAuthenticated(true);
       navigate("/");
     } catch (err) {
-      alert(err.message);
+      setErrorMessage(err.message);
     }
   };
 
@@ -34,6 +48,13 @@ function LoginPage() {
       <div className="card shadow">
         <div className="card-body">
           <h3 className="card-title mb-4 text-center">Login</h3>
+
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
+
           <form onSubmit={handleLogin}>
             <div className="mb-3">
               <label className="form-label">Email address</label>
@@ -59,6 +80,7 @@ function LoginPage() {
               Login
             </button>
           </form>
+
           <div className="text-center mt-3">
             <small>
               Don't have an account? <Link to="/register">Register here</Link>

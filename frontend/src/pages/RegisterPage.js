@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -6,6 +6,18 @@ const API_URL = process.env.REACT_APP_API_URL;
 function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    if (errorMessage || successMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage, successMessage]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -17,11 +29,16 @@ function RegisterPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) throw new Error("Registration failed");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Registration failed");
+      }
 
-      alert("Registration successful. You can now log in.");
+      setSuccessMessage("Registration successful. You can now log in.");
+      setEmail("");
+      setPassword("");
     } catch (err) {
-      alert(err.message);
+      setErrorMessage(err.message);
     }
   };
 
@@ -30,6 +47,18 @@ function RegisterPage() {
       <div className="card shadow">
         <div className="card-body">
           <h3 className="card-title mb-4 text-center">Register</h3>
+
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
+          {successMessage && (
+            <div className="alert alert-success" role="alert">
+              {successMessage}
+            </div>
+          )}
+
           <form onSubmit={handleRegister}>
             <div className="mb-3">
               <label className="form-label">Email address</label>
