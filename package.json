@@ -1,0 +1,17 @@
+{
+  "name": "content-analysis-platform",
+  "version": "1.0.0",
+  "description": "Full-stack AI-powered content analysis platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "npm run start:dev --prefix backend",
+    "start:frontend": "npm start --prefix frontend",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend"
+  },
+  "author": "Mark Solomchak",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
