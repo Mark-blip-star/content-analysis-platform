@@ -34,7 +34,6 @@ cd content-insight-platform
    BACKEND:
    cd backend
    cp .env.example .env
-   cp .env.example backend/.env
 
 Note:
 Ensure your backend/.env contains a valid OPENAI_API_KEY
@@ -42,7 +41,6 @@ Ensure your backend/.env contains a valid OPENAI_API_KEY
 FRONTEND:
 cd frontend
 cp .env.example .env
-cp .env.example backend/.env
 
 3. Start Infrastructure (PostgreSQL, Redis)
 
