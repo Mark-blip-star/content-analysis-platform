@@ -5,6 +5,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { AiProcessingService } from 'src/ai-processing/ai-processing.service';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 
 @Processor('ai-processing')
 @Injectable()
@@ -15,6 +16,7 @@ export class AiQueueProcessor {
     private readonly aiService: AiProcessingService,
     @InjectRepository(ContentSubmission)
     private readonly contentRepo: Repository<ContentSubmission>,
+    private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
   @Process('process-content')
@@ -44,5 +46,7 @@ export class AiQueueProcessor {
 
     await this.contentRepo.save(content);
     this.logger.log('Content saved successfully');
+    this.notificationsGateway.emitContentUpdate(contentId);
+    this.logger.log(`Notification sent for content ID: ${contentId}`);
   }
 }

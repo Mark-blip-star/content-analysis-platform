@@ -12,6 +12,7 @@ import { AiProcessingService } from './ai-processing/ai-processing.service';
 import { AiProcessingModule } from './ai-processing/ai-processing.module';
 import { QueueModule } from './queue/queue.module';
 import { BullModule } from '@nestjs/bull';
+import { NottificationsModule } from './notifications/nottifications.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { BullModule } from '@nestjs/bull';
     AuthModule,
     AiProcessingModule,
     QueueModule,
+    NottificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AiProcessingService],
